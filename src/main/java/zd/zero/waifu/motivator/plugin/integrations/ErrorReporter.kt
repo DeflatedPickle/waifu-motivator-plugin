@@ -3,7 +3,6 @@ package zd.zero.waifu.motivator.plugin.integrations
 import com.google.gson.GsonBuilder
 import com.intellij.ide.IdeBundle
 import com.intellij.ide.plugins.PluginManagerCore
-import com.intellij.ide.ui.LafManager
 import com.intellij.openapi.application.ApplicationInfo
 import com.intellij.openapi.application.ApplicationNamesInfo
 import com.intellij.openapi.diagnostic.ErrorReportSubmitter
@@ -75,8 +74,10 @@ class ErrorReporter : ErrorReportSubmitter() {
         val appInfo = pair.first
         val appName = pair.second
         val properties = System.getProperties()
+        val pluginState = WaifuMotivatorPluginState.getPluginState()
         return event
             .withExtra("App Name", appName)
+            .withExtra("Version", pluginState.version)
             .withExtra("Build Info", getBuildInfo(appInfo))
             .withExtra("JRE", getJRE(properties))
             .withExtra("VM", getVM(properties))
@@ -86,8 +87,7 @@ class ErrorReporter : ErrorReportSubmitter() {
             .withExtra("Cores", Runtime.getRuntime().availableProcessors())
             .withExtra("Registry", getRegistry())
             .withExtra("Non-Bundled Plugins", getNonBundledPlugins())
-            .withExtra("Current LAF", LafManager.getInstance().currentLookAndFeel?.name)
-            .withExtra("Plugin Config", gson.toJson(WaifuMotivatorPluginState.getPluginState()))
+            .withExtra("Plugin Config", gson.toJson(pluginState))
     }
 
     private fun getJRE(properties: Properties): String? {
@@ -104,12 +104,12 @@ class ErrorReporter : ErrorReportSubmitter() {
 
     private fun getNonBundledPlugins(): String? {
         return Arrays.stream(PluginManagerCore.getPlugins())
-            .filter { p -> !p.isBundled && p.isEnabled }
-            .map { p -> p.pluginId.idString }.collect(Collectors.joining(","))
+            .filter { it.isBundled.not() && it.isEnabled }
+            .map { it.pluginId.idString }.collect(Collectors.joining(","))
     }
 
     private fun getRegistry() = Registry.getAll().stream().filter { it.isChangedFromDefault }
-        .map { v -> v.key + "=" + v.asString() }.collect(Collectors.joining(","))
+        .map { "${it.key}=${it.asString()}" }.collect(Collectors.joining(","))
 
     private fun getGC() = ManagementFactory.getGarbageCollectorMXBeans().stream()
         .map { it.name }.collect(Collectors.joining(","))
