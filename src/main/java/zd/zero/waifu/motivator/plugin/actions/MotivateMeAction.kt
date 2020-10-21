@@ -10,7 +10,7 @@ import zd.zero.waifu.motivator.plugin.motivation.event.MotivationEvent
 import zd.zero.waifu.motivator.plugin.motivation.event.MotivationEventCategory
 import zd.zero.waifu.motivator.plugin.motivation.event.MotivationEvents
 import zd.zero.waifu.motivator.plugin.settings.WaifuMotivatorPluginState
-import java.util.*
+import java.util.Objects
 
 class MotivateMeAction : AnAction(), DumbAware {
     override fun actionPerformed(e: AnActionEvent) {
@@ -18,7 +18,8 @@ class MotivateMeAction : AnAction(), DumbAware {
         val config = AlertConfiguration(
             pluginState.isMotivateMeEnabled || pluginState.isMotivateMeSoundEnabled,
             pluginState.isMotivateMeEnabled,
-            pluginState.isMotivateMeSoundEnabled)
+            pluginState.isMotivateMeSoundEnabled
+        )
         showUntitledMotivationEventFromCategories(
             MotivationEvent(
                 MotivationEvents.MISC,

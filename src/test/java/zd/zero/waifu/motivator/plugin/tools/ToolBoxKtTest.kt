@@ -2,7 +2,7 @@ package zd.zero.waifu.motivator.plugin.tools
 
 import org.assertj.core.api.Assertions
 import org.junit.Test
-import java.util.*
+import java.util.Optional
 
 internal class BestGirl(val name: String)
 class ToolBoxKtTest {
@@ -15,7 +15,7 @@ class ToolBoxKtTest {
                 ("Ayy" to "Lmao").toOptional(),
                 { println("Hello World") }.toOptional()
             ).isPresent
-        ).isTrue()
+        ).isTrue
 
         Assertions.assertThat(
             allOf(
@@ -23,7 +23,7 @@ class ToolBoxKtTest {
                 ("Ayy" to "Lmao").toOptional(),
                 Optional.empty<() -> Unit>()
             ).isPresent
-        ).isFalse()
+        ).isFalse
 
         Assertions.assertThat(
             allOf(
@@ -31,7 +31,7 @@ class ToolBoxKtTest {
                 ("Ayy" to "Lmao").toOptional(),
                 { println("Hello World") }.toOptional()
             ).isPresent
-        ).isFalse()
+        ).isFalse
 
         Assertions.assertThat(
             allOf(
@@ -39,6 +39,6 @@ class ToolBoxKtTest {
                 Optional.empty<Pair<String, String>>(),
                 { println("Hello World") }.toOptional()
             ).isPresent
-        ).isFalse()
+        ).isFalse
     }
 }
